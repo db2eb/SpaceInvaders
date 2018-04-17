@@ -103,7 +103,6 @@ end
 
 function love.draw()
 	love.graphics.draw(background)
-
 	if game_over then
 		love.graphics.print("Game Over!",100,100)
 		return
@@ -126,13 +125,3 @@ function love.draw()
 		love.graphics.rectangle("fill",b.x,b.y,10,10)
 	end
 end
-
-
-
-
-
-
-
-
-
-

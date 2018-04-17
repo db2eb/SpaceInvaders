@@ -15,7 +15,7 @@ function checkCollisions(enemies, bullets)
 		end
 	end
 end
-
+--test change
 function love.load()
 	local music = love.audio.newSource('bgm.mp3','static')
 	music:setLooping(true)

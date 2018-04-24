@@ -30,11 +30,11 @@ function love.load()
 	player.cooldown = 20
 	player.speed = 7
 	player.image = love.graphics.newImage('spaceship.png')
-	--player.fire_sound = love.audio.newSource('pop3.wav','static')
+	player.fire_sound = love.audio.newSource('Laser_Shoot1.wav','static')
 
 	player.fire = function()
 		if player.cooldown <= 0 then
-			--love.audio.play(player.fire_sound)
+			love.audio.play(player.fire_sound)
 			player.cooldown = 20
 			bullet = {}
 			bullet.x = player.x + 18

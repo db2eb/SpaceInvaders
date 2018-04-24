@@ -3,7 +3,8 @@ love.graphics.setDefaultFilter('nearest','nearest')
 enemy = {}
 enemies_controller = {}
 enemies_controller.enemies = {}
-enemies_controller.image = love.graphics.newImage('friend.png')
+enemies_controller.image = love.graphics.newImage('meteor.png')
+--430x413 dimension
 
 --collision detector
 function checkCollisions(enemies, bullets)
@@ -35,6 +36,7 @@ function love.load()
 	player.speed = 7
 	player.image = love.graphics.newImage('spaceship.png')
 	player.fire_sound = love.audio.newSource('Laser_Shoot1.wav','static')
+	player.fire_sound:setVolume(0.5)
 
 	--shooting with cooldown mechanic
 	player.fire = function()
@@ -58,8 +60,8 @@ function enemies_controller:spawnEnemy(x,y)
 	enemy = {}
 	enemy.x = x
 	enemy.y = y
-	enemy.width = 60
-	enemy.height = 20
+	enemy.width = 40
+	enemy.height = 40
 	enemy.bullets={}
 	enemy.cooldown = 20
 	enemy.speed = 1
@@ -85,6 +87,11 @@ function love.update(dt)
 		player.x = player.x + player.speed
 	elseif love.keyboard.isDown("left") then
 		player.x = player.x - player.speed
+	end
+	if love.keyboard.isDown("up") then
+		player.y = player.y - player.speed
+	elseif love.keyboard.isDown("down") then
+		player.y = player.y + player.speed
 	end
 	if love.keyboard.isDown("space") then
 		player.fire()

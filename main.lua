@@ -4,21 +4,6 @@ enemy = {}
 enemies_controller = {}
 enemies_controller.enemies = {}
 enemies_controller.image = love.graphics.newImage('meteor.png')
---430x413 dimension
-
---collision detector
-function checkCollisions(enemies, bullets)
-	for i,e in ipairs(enemies) do
-		for _,b in pairs(bullets) do
-			if b.y <= e.y + e.height and b.x > e.x and b.x <e.x + e.width then
-				table.remove(enemies,i)
-				table.remove(bullets,i)
-				--spawn new enemy if killed
-				enemies_controller:spawnEnemy(math.random(1,love.graphics.getWidth()-50),0)
-			end
-		end
-	end
-end
 
 --initial load
 function love.load()
@@ -52,30 +37,6 @@ function love.load()
 	--initial enemies
 	for i=0, 5 do
 		enemies_controller:spawnEnemy(i*140,0)
-	end
-end
-
---hash table for enemies
-function enemies_controller:spawnEnemy(x,y)
-	enemy = {}
-	enemy.x = x
-	enemy.y = y
-	enemy.width = 40
-	enemy.height = 40
-	enemy.bullets={}
-	enemy.cooldown = 20
-	enemy.speed = 1
-	table.insert(self.enemies, enemy)
-end
-
---if they would shoot
-function enemy:fire() --colon is a simple way to do .fire(self)
-	if self.cooldown <= 0 then
-		self.cooldown = 20
-		bullet = {}
-		bullet.x = self.x + 10
-		bullet.y = self.y
-		table.insert(self.bullets, bullet)
 	end
 end
 
@@ -124,19 +85,43 @@ function love.draw()
 	elseif game_win then
 		love.graphics.print("You Win!",500,500)
 	end
-
 	--draw player
 	love.graphics.setColor(255,255,255)
 	love.graphics.draw(player.image, player.x , player.y ,0,.10)
-
 	--draw enemies
 	for _,e in pairs(enemies_controller.enemies) do
 		love.graphics.draw(enemies_controller.image,e.x,e.y,0,.10)
 	end
-
 	--draw bullets
 	love.graphics.setColor(255,255,255)
 	for _,b in pairs(player.bullets) do
 		love.graphics.rectangle("fill",b.x,b.y,10,10)
+	end
+end
+
+--hash table for enemies
+function enemies_controller:spawnEnemy(x,y)
+	enemy = {}
+	enemy.x = x
+	enemy.y = y
+	enemy.width = 40
+	enemy.height = 40
+	enemy.bullets={}
+	enemy.cooldown = 20
+	enemy.speed = 1
+	table.insert(self.enemies, enemy)
+end
+
+--collision detector
+function checkCollisions(enemies, bullets)
+	for i,e in ipairs(enemies) do
+		for _,b in pairs(bullets) do
+			if b.y <= e.y + e.height and b.x > e.x and b.x <e.x + e.width then
+				table.remove(enemies,i)
+				table.remove(bullets,i)
+				--spawn new enemy if killed
+				enemies_controller:spawnEnemy(math.random(1,love.graphics.getWidth()-50),0)
+			end
+		end
 	end
 end

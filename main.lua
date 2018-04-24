@@ -1,21 +1,25 @@
+require "math"
 love.graphics.setDefaultFilter('nearest','nearest')
 enemy = {}
 enemies_controller = {}
 enemies_controller.enemies = {}
 enemies_controller.image = love.graphics.newImage('friend.png')
 
---hash bucket collision detection for optimized
+--collision detector
 function checkCollisions(enemies, bullets)
 	for i,e in ipairs(enemies) do
 		for _,b in pairs(bullets) do
 			if b.y <= e.y + e.height and b.x > e.x and b.x <e.x + e.width then
 				table.remove(enemies,i)
 				table.remove(bullets,i)
+				--spawn new enemy if killed
+				enemies_controller:spawnEnemy(math.random(1,love.graphics.getWidth()-50),0)
 			end
 		end
 	end
 end
 
+--initial load
 function love.load()
 	local music = love.audio.newSource('bgm.mp3','static')
 	music:setLooping(true)
@@ -32,6 +36,7 @@ function love.load()
 	player.image = love.graphics.newImage('spaceship.png')
 	player.fire_sound = love.audio.newSource('Laser_Shoot1.wav','static')
 
+	--shooting with cooldown mechanic
 	player.fire = function()
 		if player.cooldown <= 0 then
 			love.audio.play(player.fire_sound)
@@ -42,11 +47,13 @@ function love.load()
 			table.insert(player.bullets, bullet)
 		end
 	end
-	for i=0, 10 do
-		enemies_controller:spawnEnemy(i*70,0)
+	--initial enemies
+	for i=0, 5 do
+		enemies_controller:spawnEnemy(i*140,0)
 	end
 end
 
+--hash table for enemies
 function enemies_controller:spawnEnemy(x,y)
 	enemy = {}
 	enemy.x = x
@@ -59,6 +66,7 @@ function enemies_controller:spawnEnemy(x,y)
 	table.insert(self.enemies, enemy)
 end
 
+--if they would shoot
 function enemy:fire() --colon is a simple way to do .fire(self)
 	if self.cooldown <= 0 then
 		self.cooldown = 20
@@ -69,18 +77,18 @@ function enemy:fire() --colon is a simple way to do .fire(self)
 	end
 end
 
+--constantly running
 function love.update(dt)
 	player.cooldown = player.cooldown - 1
+	--controls
 	if love.keyboard.isDown("right") then
 		player.x = player.x + player.speed
 	elseif love.keyboard.isDown("left") then
 		player.x = player.x - player.speed
 	end
-
 	if love.keyboard.isDown("space") then
 		player.fire()
 	end
-
 	if #enemies_controller.enemies == 0 then --# checks length
 		game_win = true
 	end
